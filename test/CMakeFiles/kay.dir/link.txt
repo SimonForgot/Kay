@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -flto -shared  -o kay.cpython-38-x86_64-linux-gnu.so CMakeFiles/kay.dir/src/kay.cpp.o  -Wl,-rpath,/home/simonforgot/proj/Kay/embree/lib-linux ../embree/lib-linux/libembree3.so 
