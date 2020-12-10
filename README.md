@@ -1,2 +1,2 @@
 # Kay
-A tiny simple differentiable render  
+A tiny simple differentiable renderer  
