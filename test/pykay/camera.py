@@ -1,13 +1,18 @@
+import torch
+import pykay
+
+
 class Camera:
     def __init__(self, 
-                position,
-                look_at,
+                pos,
+                look,
                 up,
                 f_dist,
                 fov
                 ):
-        self.position = position
-        self.look_at = look_at
-        self.up = up
+        self.pos = pos
+        self.look_dir = pykay.normalize(look - pos)
+        right = pykay.normalize(torch.cross(self.look_dir, pykay.normalize(up)))
+        self.up = pykay.normalize(torch.cross(right, self.look_dir))
         self.f_dist = f_dist
-        self._fov = fov #f_dist/half_height
+        self._fov = fov #half_height/f_dist
