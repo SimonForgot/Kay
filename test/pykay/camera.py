@@ -16,3 +16,4 @@ class Camera:
         self.up = pykay.normalize(torch.cross(right, self.look_dir))
         self.f_dist = f_dist
         self._fov = fov #half_height/f_dist
+

@@ -43,9 +43,11 @@ class Rtcore
 	}
 	Rtrc intersect(float ox,float oy,float oz,float dx,float dy,float dz)
 	{
+
 		struct RTCIntersectContext context;
  		rtcInitIntersectContext(&context);
  		struct RTCRayHit rayhit;
+		
 		rayhit.ray.org_x = ox;
  		rayhit.ray.org_y = oy;
  		rayhit.ray.org_z = oz;
