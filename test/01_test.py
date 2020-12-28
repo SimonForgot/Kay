@@ -36,25 +36,45 @@ right = torch.cross(c.look_dir, c.up)
 left_up = center+temp*c.up-temp*right
 
 # Blinn-Phong Model Shader
-Ks = torch.Tensor([0, 0, 1.0]).to(device)
+Ks = torch.Tensor([0.5, 0, 0.0]).to(device)
 Ks.requires_grad = True
-LightColor = torch.Tensor([1.0, 1.0, 1.0]).to(device)
-light_dir = pykay.normalize(torch.Tensor([0, -1, -1]).to(device))
+Kd = torch.Tensor([0.4, 0, 0.0]).to(device)
+Kd.requires_grad = True
+Ka = torch.Tensor([0.1, 0, 0.0]).to(device)
+Ka.requires_grad = True
+Ia = torch.Tensor([0.5, 0, 0.0]).to(device)
+Ia.requires_grad = True
+LightColor = torch.Tensor([100.0, 100.0, 100.0]).to(device)
+LightColor.requires_grad =True
+light_dir = pykay.normalize(torch.Tensor([0, -1, 0]).to(device))
 Shininess = torch.Tensor([10.0]).to(device)
 Shininess.requires_grad = True
 
 
-def shade(geo_id, prim_id, p, wo):
+def shade_blinn_phong(geo_id, prim_id, p, wo):
     hit_obj = objs[geo_id]
     n = torch.Tensor(
         [hit_obj.normals[3*prim_id],
          hit_obj.normals[3*prim_id+1],
          hit_obj.normals[3*prim_id+2]]).to(device)
-    h = pykay.normalize(-light_dir-p.to(device)).to(device)
+    h = pykay.normalize(-light_dir-wo.to(device)).to(device)
+    t = n.dot(h)
+
+    d_temp=torch.max(torch.Tensor([n.dot(-light_dir), 0.0]).to(device))
+    s_temp = torch.pow(torch.max(torch.Tensor([t, 0.0]).to(device)), Shininess)
+    #return Ks*LightColor*(x)
+    return LightColor/(100-p[1]*p[1])*(Kd*d_temp+Ks*s_temp)+Ka*Ia
+
+def shade_cook(geo_id, prim_id, p, wo):
+    hit_obj = objs[geo_id]
+    n = torch.Tensor(
+        [hit_obj.normals[3*prim_id],
+         hit_obj.normals[3*prim_id+1],
+         hit_obj.normals[3*prim_id+2]]).to(device)
+    h = pykay.normalize(-light_dir-wo.to(device)).to(device)
     t = n.dot(h)
     x = torch.sign(t) * torch.pow(torch.abs(t), Shininess)
     return Ks*LightColor*(x)
-
 
 ssn = 1
 pic_res = 300
@@ -74,7 +94,7 @@ def render():
                 rc = rt.intersect(r.o[0], r.o[1], r.o[2],
                                   r.d[0], r.d[1], r.d[2])
                 if rc.hit_flag:
-                    image[i][j] += shade(rc.geo_id, rc.prim_id,
+                    image[i][j] += shade_blinn_phong(rc.geo_id, rc.prim_id,
                                          pixel_pos+dir*rc.dist, dir)
                 else:
                     # env background color
@@ -93,9 +113,10 @@ pykay.imwrite(diff.cpu(), 'results/01_test/init_diff.png')
 pykay.imwrite(image.cpu(), 'results/01_test/image.png')
 
 
-optimizer = torch.optim.Adam([Ks, Shininess], lr=0.25)
+
+optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,Shininess,LightColor], lr=0.1)
 # Run 200 Adam iterations.
-for t in range(2):
+for t in range(50):
     print('iteration:', t)
     optimizer.zero_grad()
     image = render()
@@ -109,12 +130,16 @@ for t in range(2):
     # Backpropagate the gradients.
     loss.backward()
     # Print the gradients of the three vertices.
-    print('grad:', Ks.grad, Shininess.grad)
+    print('grad:', Ks.grad, Kd.grad, Ka.grad,Ia.grad,Shininess.grad,LightColor.grad)
 
     # Take a gradient descent step.
     optimizer.step()
     # Print the current three vertices.
     print('Ks:', Ks)
-    print('Shininess', Shininess)
+    print('Kd:', Kd)
+    print('Ka:', Ka)
+    print('Ia:', Ia)
+    print('Shininess:', Shininess)
+    print('LightColor:',LightColor)
 
  
