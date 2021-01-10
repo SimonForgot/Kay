@@ -113,3 +113,7 @@ CMakeFiles/kay.dir/src/kay.cpp.o
  /home/simonforgot/anaconda3/include/python3.8/weakrefobject.h
  /home/simonforgot/proj/Kay/src/kay.cpp
  /home/simonforgot/proj/Kay/src/ptr.h
+ /home/simonforgot/proj/Kay/src/render.h
+CMakeFiles/kay.dir/src/render.cpp.o
+ /home/simonforgot/proj/Kay/src/ptr.h
+ /home/simonforgot/proj/Kay/src/render.cpp

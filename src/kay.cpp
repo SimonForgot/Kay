@@ -1,6 +1,8 @@
 #include <embree3/rtcore.h>
 #include <limits>
 #include <pybind11/pybind11.h>
+#include <random>
+#include "render.h"
 #include "ptr.h"
 namespace py = pybind11;
  
@@ -75,16 +77,13 @@ class Rtcore
 	}
 };
 
-
-
 PYBIND11_MODULE(kay, m) {
-    m.doc() = "Embree raytracing core pybind11 binding "; 
+    m.doc() = "pybind11 binding "; 
 
 	py::class_<ptr<float>>(m, "float_ptr")
         .def(py::init<std::size_t>());
     py::class_<ptr<unsigned int>>(m, "unsigned_int_ptr")
         .def(py::init<std::size_t>());
-
 
 	py::class_<Rtrc>(m,"Rtrc")
 		.def(py::init<bool,int,int,float>())
@@ -99,4 +98,5 @@ PYBIND11_MODULE(kay, m) {
 		.def("addGeo",&Rtcore::addGeo)
 		.def("RTsetup",&Rtcore::RTsetup);
 		
+	m.def("render", &render, "");
 }

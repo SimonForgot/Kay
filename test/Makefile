@@ -150,6 +150,33 @@ src/kay.cpp.s:
 	$(MAKE) -f CMakeFiles/kay.dir/build.make CMakeFiles/kay.dir/src/kay.cpp.s
 .PHONY : src/kay.cpp.s
 
+src/render.o: src/render.cpp.o
+
+.PHONY : src/render.o
+
+# target to build an object file
+src/render.cpp.o:
+	$(MAKE) -f CMakeFiles/kay.dir/build.make CMakeFiles/kay.dir/src/render.cpp.o
+.PHONY : src/render.cpp.o
+
+src/render.i: src/render.cpp.i
+
+.PHONY : src/render.i
+
+# target to preprocess a source file
+src/render.cpp.i:
+	$(MAKE) -f CMakeFiles/kay.dir/build.make CMakeFiles/kay.dir/src/render.cpp.i
+.PHONY : src/render.cpp.i
+
+src/render.s: src/render.cpp.s
+
+.PHONY : src/render.s
+
+# target to generate assembly for a file
+src/render.cpp.s:
+	$(MAKE) -f CMakeFiles/kay.dir/build.make CMakeFiles/kay.dir/src/render.cpp.s
+.PHONY : src/render.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +189,9 @@ help:
 	@echo "... src/kay.o"
 	@echo "... src/kay.i"
 	@echo "... src/kay.s"
+	@echo "... src/render.o"
+	@echo "... src/render.i"
+	@echo "... src/render.s"
 .PHONY : help
 
 

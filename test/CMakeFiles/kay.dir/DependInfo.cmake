@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/simonforgot/proj/Kay/src/kay.cpp" "/home/simonforgot/proj/Kay/test/CMakeFiles/kay.dir/src/kay.cpp.o"
+  "/home/simonforgot/proj/Kay/src/render.cpp" "/home/simonforgot/proj/Kay/test/CMakeFiles/kay.dir/src/render.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

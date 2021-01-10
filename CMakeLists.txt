@@ -14,6 +14,8 @@ include_directories(pybind11/include)
 add_compile_options(-Wall -g -O3 -fvisibility=hidden -Wno-unknown-pragmas)
 
 set(SRCS src/kay.cpp
+        src/render.cpp
+        src/render.h
         src/ptr.h)
 
 pybind11_add_module(kay ${SRCS})
