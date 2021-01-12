@@ -12,4 +12,6 @@ void d_render(ptr<float> shape,
             int p_num,
             ptr<unsigned int> indices,
             int tri_num,
+            ptr<float> color,
+            ptr<float> grad_img,
 			ptr<float> d_shape);

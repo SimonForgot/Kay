@@ -99,4 +99,5 @@ PYBIND11_MODULE(kay, m) {
 		.def("RTsetup",&Rtcore::RTsetup);
 		
 	m.def("render", &render, "");
+	m.def("d_render", &d_render, "");
 }
