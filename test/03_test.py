@@ -23,7 +23,7 @@ M=torch.tensor([[1,0,0,0],
 V=torch.tensor([[1,0,0,0],
     [0,1,0,0],
     [0,0,1,0],
-    [0,0,0,1]],dtype=torch.float32)
+    [0,0,-0.2,1]],dtype=torch.float32)
 
 P=torch.tensor([[1,0,0,0],
     [0,1,0,0],
