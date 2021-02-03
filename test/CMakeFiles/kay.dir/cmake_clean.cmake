@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/kay.dir/src/kay.cpp.o"
   "CMakeFiles/kay.dir/src/render.cpp.o"
-  "kay.cpython-38-x86_64-linux-gnu.so"
+  "kay.cpython-37m-x86_64-linux-gnu.so"
   "kay.pdb"
 )
 

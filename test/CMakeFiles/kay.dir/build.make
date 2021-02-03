@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/simonforgot/proj/Kay
+CMAKE_SOURCE_DIR = /home/simon/repo/Kay
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/simonforgot/proj/Kay/test
+CMAKE_BINARY_DIR = /home/simon/repo/Kay/test
 
 # Include any dependencies generated for this target.
 include CMakeFiles/kay.dir/depend.make
@@ -59,29 +59,29 @@ include CMakeFiles/kay.dir/flags.make
 
 CMakeFiles/kay.dir/src/kay.cpp.o: CMakeFiles/kay.dir/flags.make
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/kay.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simonforgot/proj/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/kay.dir/src/kay.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kay.dir/src/kay.cpp.o -c /home/simonforgot/proj/Kay/src/kay.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simon/repo/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/kay.dir/src/kay.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kay.dir/src/kay.cpp.o -c /home/simon/repo/Kay/src/kay.cpp
 
 CMakeFiles/kay.dir/src/kay.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kay.dir/src/kay.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simonforgot/proj/Kay/src/kay.cpp > CMakeFiles/kay.dir/src/kay.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simon/repo/Kay/src/kay.cpp > CMakeFiles/kay.dir/src/kay.cpp.i
 
 CMakeFiles/kay.dir/src/kay.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kay.dir/src/kay.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simonforgot/proj/Kay/src/kay.cpp -o CMakeFiles/kay.dir/src/kay.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simon/repo/Kay/src/kay.cpp -o CMakeFiles/kay.dir/src/kay.cpp.s
 
 CMakeFiles/kay.dir/src/render.cpp.o: CMakeFiles/kay.dir/flags.make
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/render.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simonforgot/proj/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/kay.dir/src/render.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kay.dir/src/render.cpp.o -c /home/simonforgot/proj/Kay/src/render.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/simon/repo/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/kay.dir/src/render.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/kay.dir/src/render.cpp.o -c /home/simon/repo/Kay/src/render.cpp
 
 CMakeFiles/kay.dir/src/render.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/kay.dir/src/render.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simonforgot/proj/Kay/src/render.cpp > CMakeFiles/kay.dir/src/render.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/simon/repo/Kay/src/render.cpp > CMakeFiles/kay.dir/src/render.cpp.i
 
 CMakeFiles/kay.dir/src/render.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/kay.dir/src/render.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simonforgot/proj/Kay/src/render.cpp -o CMakeFiles/kay.dir/src/render.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/simon/repo/Kay/src/render.cpp -o CMakeFiles/kay.dir/src/render.cpp.s
 
 # Object files for target kay
 kay_OBJECTS = \
@@ -91,16 +91,16 @@ kay_OBJECTS = \
 # External object files for target kay
 kay_EXTERNAL_OBJECTS =
 
-kay.cpython-38-x86_64-linux-gnu.so: CMakeFiles/kay.dir/src/kay.cpp.o
-kay.cpython-38-x86_64-linux-gnu.so: CMakeFiles/kay.dir/src/render.cpp.o
-kay.cpython-38-x86_64-linux-gnu.so: CMakeFiles/kay.dir/build.make
-kay.cpython-38-x86_64-linux-gnu.so: ../embree/lib-linux/libembree3.so
-kay.cpython-38-x86_64-linux-gnu.so: CMakeFiles/kay.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simonforgot/proj/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared module kay.cpython-38-x86_64-linux-gnu.so"
+kay.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/kay.dir/src/kay.cpp.o
+kay.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/kay.dir/src/render.cpp.o
+kay.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/kay.dir/build.make
+kay.cpython-37m-x86_64-linux-gnu.so: ../embree/lib-linux/libembree3.so
+kay.cpython-37m-x86_64-linux-gnu.so: CMakeFiles/kay.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/simon/repo/Kay/test/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared module kay.cpython-37m-x86_64-linux-gnu.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/kay.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-CMakeFiles/kay.dir/build: kay.cpython-38-x86_64-linux-gnu.so
+CMakeFiles/kay.dir/build: kay.cpython-37m-x86_64-linux-gnu.so
 
 .PHONY : CMakeFiles/kay.dir/build
 
@@ -109,6 +109,6 @@ CMakeFiles/kay.dir/clean:
 .PHONY : CMakeFiles/kay.dir/clean
 
 CMakeFiles/kay.dir/depend:
-	cd /home/simonforgot/proj/Kay/test && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/simonforgot/proj/Kay /home/simonforgot/proj/Kay /home/simonforgot/proj/Kay/test /home/simonforgot/proj/Kay/test /home/simonforgot/proj/Kay/test/CMakeFiles/kay.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/simon/repo/Kay/test && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/simon/repo/Kay /home/simon/repo/Kay /home/simon/repo/Kay/test /home/simon/repo/Kay/test /home/simon/repo/Kay/test/CMakeFiles/kay.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/kay.dir/depend
 

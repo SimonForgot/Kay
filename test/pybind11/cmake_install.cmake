@@ -1,4 +1,4 @@
-# Install script for directory: /home/simonforgot/proj/Kay/pybind11
+# Install script for directory: /home/simon/repo/Kay/pybind11
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

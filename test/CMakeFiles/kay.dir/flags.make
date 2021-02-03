@@ -6,5 +6,5 @@ CXX_FLAGS = -fPIC -fvisibility=hidden   -Wall -g -O3 -fvisibility=hidden -Wno-un
 
 CXX_DEFINES = -Dkay_EXPORTS
 
-CXX_INCLUDES = -I/home/simonforgot/proj/Kay/embree/include -isystem /home/simonforgot/proj/Kay/pybind11/include -isystem /home/simonforgot/anaconda3/include/python3.8 
+CXX_INCLUDES = -I/home/simon/repo/Kay/embree/include -isystem /home/simon/repo/Kay/pybind11/include -isystem /home/simon/miniconda3/envs/pytorch/include/python3.7m 
 
