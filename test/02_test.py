@@ -7,9 +7,12 @@ from tqdm import tqdm
 
 render = pykay.RenderFunction.apply
 
+#shape=torch.tensor([[50, 25.0], [200.0, 200.0], [15.0, 150.0],
+#[200.0, 50.0], [150.0, 250.0], [50.0, 100.0]],requires_grad = True)     
 shape=torch.tensor([[50, 25.0], [200.0, 200.0], [15.0, 150.0],
-[200.0, 50.0], [150.0, 250.0], [50.0, 100.0]],requires_grad = True)     
-                    
+[200.0, 50.0], [150.0, 250.0], [50.0, 100.0]],requires_grad = True) 
+
+
 indices=torch.tensor([[0,1,2],[3,4,5]], dtype = torch.int32)
 color=torch.tensor([[0.3,0.5,0.3], [0.3,0.3,0.5]])
 
