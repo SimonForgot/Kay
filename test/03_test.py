@@ -16,25 +16,26 @@ shape=torch.tensor([[50, 25.0,0,1], [200.0, 200.0,0,1], [15.0, 150.0,0,1],
 
 M=torch.tensor([[1,0,0,0],
     [0,1,0,0],
-    [0,0,0,1],
+    [0,0,1,0],
     [0,0,0,1]],dtype=torch.float32)
 
-print(M.type())
+
 V=torch.tensor([[1,0,0,0],
     [0,1,0,0],
-    [0,0,0,1],
+    [0,0,1,0],
     [0,0,0,1]],dtype=torch.float32)
 
 P=torch.tensor([[1,0,0,0],
     [0,1,0,0],
-    [0,0,0,1],
+    [0,0,1,0],
     [0,0,0,1]],dtype=torch.float32)
+
+t_shape=shape@M@V@P
+print(t_shape)
 
 indices=torch.tensor([[0,1,2],[3,4,5]], dtype = torch.int32)
 color=torch.tensor([[0.3,0.5,0.3], [0.3,0.3,0.5]])
 
-t_shape=shape@M@V@P
-print(t_shape)
 target = render(t_shape,6,indices,2,color)
 pykay.imwrite(target.cpu(), 'results/03_test/target.png')
 
