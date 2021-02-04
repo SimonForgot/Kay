@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/home/simon/repo/Kay/src/ptr.h
+/home/simonforgot/repo/Kay/src/ptr.h
 cstddef
 -
 
-/home/simon/repo/Kay/src/render.cpp
+/home/simonforgot/repo/Kay/src/render.cpp
 random
 -
 ptr.h
-/home/simon/repo/Kay/src/ptr.h
+/home/simonforgot/repo/Kay/src/ptr.h
 iostream
 -
 vector

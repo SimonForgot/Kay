@@ -37,7 +37,7 @@ class RenderFunction(torch.autograd.Function):
         indix = ctx.indix
         tri_num = ctx.tri_num
         color = ctx.color
-        d_shape=torch.zeros(p_num, 2)
+        d_shape=torch.zeros(p_num, 4)
         kay.d_render(kay.float_ptr(shape.data_ptr()), 
                 p_num,
                 kay.unsigned_int_ptr(indix.data_ptr()),
