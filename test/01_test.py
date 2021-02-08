@@ -116,7 +116,8 @@ pykay.imwrite(image.cpu(), 'results/blinn_phong/image.png')
 
 optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,Shininess,LightColor], lr=0.1)
 # Run 200 Adam iterations.
-for t in range(50):
+its=50
+for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()
     image = render()
@@ -143,3 +144,8 @@ for t in range(50):
     print('LightColor:',LightColor)
 
  
+if its>0:
+    from subprocess import call
+    call(["ffmpeg", "-framerate", "24", "-i",
+        "results/optimize_blinn_phong/iter_%d.png", "-vb", "20M",
+        "results/blinn_phong/out.mp4"])
