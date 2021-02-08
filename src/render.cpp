@@ -107,7 +107,7 @@ void render(ptr<float> shape,
     int pic_res = 256;
     TriangleMesh mesh;
     for (auto i = 0; i < p_num; i++)
-        mesh.vertices.push_back({shape[2 * i], shape[2 * i + 1]});
+        mesh.vertices.push_back({shape[4 * i], shape[4 * i + 1]});
     for (auto i = 0; i < tri_num; i++)
         mesh.indices.push_back({indices[3 * i], indices[3 * i + 1], indices[3 * i + 2]});
     for (auto i = 0; i < tri_num; i++)
@@ -282,7 +282,7 @@ void d_render(ptr<float> shape,
     int pic_res = 256;
     TriangleMesh mesh;
     for (auto i = 0; i < p_num; i++)
-        mesh.vertices.push_back({shape[2 * i], shape[2 * i + 1]});
+        mesh.vertices.push_back({shape[4 * i], shape[4 * i + 1]});
     for (auto i = 0; i < tri_num; i++)
         mesh.indices.push_back({indices[3 * i], indices[3 * i + 1], indices[3 * i + 2]});
     for (auto i = 0; i < tri_num; i++)
@@ -308,5 +308,7 @@ void d_render(ptr<float> shape,
     {
         d_shape[s++] = i.x;
         d_shape[s++] = i.y;
+        d_shape[s++] = 0;
+        d_shape[s++] = 0;
     }
 }

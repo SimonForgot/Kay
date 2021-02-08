@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(kay)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/")
-find_package(Python 3.7 COMPONENTS Development Interpreter REQUIRED)
+find_package(Python 3.9 COMPONENTS Development Interpreter REQUIRED)
 add_subdirectory(pybind11)
 
 find_package(Embree REQUIRED)

@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/simonforgot/repo/Kay/build",
+  "command": "/usr/bin/c++ -Dkay_EXPORTS -I/home/simonforgot/repo/Kay/embree/include -isystem /home/simonforgot/repo/Kay/pybind11/include -isystem /usr/include/python3.9 -g -fPIC -fvisibility=hidden -Wall -g -O3 -fvisibility=hidden -Wno-unknown-pragmas -o CMakeFiles/kay.dir/src/kay.cpp.o -c /home/simonforgot/repo/Kay/src/kay.cpp",
+  "file": "/home/simonforgot/repo/Kay/src/kay.cpp"
+},
+{
+  "directory": "/home/simonforgot/repo/Kay/build",
+  "command": "/usr/bin/c++ -Dkay_EXPORTS -I/home/simonforgot/repo/Kay/embree/include -isystem /home/simonforgot/repo/Kay/pybind11/include -isystem /usr/include/python3.9 -g -fPIC -fvisibility=hidden -Wall -g -O3 -fvisibility=hidden -Wno-unknown-pragmas -o CMakeFiles/kay.dir/src/render.cpp.o -c /home/simonforgot/repo/Kay/src/render.cpp",
+  "file": "/home/simonforgot/repo/Kay/src/render.cpp"
+}
+]

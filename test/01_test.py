@@ -107,10 +107,10 @@ def render():
 
 image = render()
 target = pykay.imread(
-    "/home/simonforgot/proj/Kay/test/results/01_test/target.png").to(device)
+    "results/blinn_phong/target.png").to(device)
 diff = torch.abs(target - image)
-pykay.imwrite(diff.cpu(), 'results/01_test/init_diff.png')
-pykay.imwrite(image.cpu(), 'results/01_test/image.png')
+pykay.imwrite(diff.cpu(), 'results/blinn_phong/init_diff.png')
+pykay.imwrite(image.cpu(), 'results/blinn_phong/image.png')
 
 
 
@@ -122,7 +122,7 @@ for t in range(50):
     image = render()
     # Save the intermediate render.
     pykay.imwrite(
-        image.cpu(), 'results/optimize_01_test/iter_{}.png'.format(t))
+        image.cpu(), 'results/optimize_blinn_phong/iter_{}.png'.format(t))
     # Compute the loss function. Here it is L2.
     loss = (image - target).pow(2).sum()
     print('loss:', loss.item())

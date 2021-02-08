@@ -8,21 +8,17 @@ from tqdm import tqdm
 render = pykay.RenderFunction.apply
 
 pic_size=256
-
 shape=torch.tensor([[-100, -100,0,1], [100.0, 100.0,0,1], [7, 75.0,0,1],
 [100.0, 25.0,0,1], [75.0, 125.0,0,1], [25.0, 50.0,0,1]],requires_grad = True) 
-
 M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
     [0,0,0,1]],requires_grad=True)
-
 eye_pos=50
 V=torch.tensor([[1,0,0,0],
     [0,1,0,0],
     [0,0,1,0],
     [0,0,-eye_pos,1]],dtype=torch.float32)
-
 n=50
 f=100
 r=pic_size/2
@@ -31,61 +27,30 @@ P=torch.tensor([[-n/r,0,0,0],
     [0,-n/t,0,0],
     [0,0,(n+f)/(f-n),1],
     [0,0,(2*f*n)/(f-n),0]],dtype=torch.float32)
-
 m_shape=shape@M@V@P
-
-
 w=m_shape[:,3]
 h_shape=torch.transpose(m_shape,0,1)/w
-#h_shape can not be hack!That's ridiculous.
 hh_shape=torch.transpose(h_shape,0,1)
 f_shape=hh_shape+torch.tensor([1.,1,0,0])
 t_shape=f_shape*torch.tensor([pic_size/2,pic_size/2,1.,1])
 
 
-
-"""
-loss =t_shape.sum()
-print('loss:', loss.item())
-# Backpropagate the gradients.
-loss.backward()#retain_graph=True
-# Print the gradients of the three vertices.
-print('grad:', M.grad)
-"""
 indices=torch.tensor([[0,1,2],[3,4,5]], dtype = torch.int32)
 color=torch.tensor([[0.3,0.5,0.3], [0.3,0.3,0.5]])
 target = render(t_shape,6,indices,2,color)
 pykay.imwrite(target.cpu(), 'results/03_test/target.png')
 
-"""
-loss = target.sum()
-print('loss:', loss.item())
-# Backpropagate the gradients.
-loss.backward()#retain_graph=True
-# Print the gradients of the three vertices.
-print('grad!!!!!!!!!!!:', M.grad)
-"""
 
 
 shape=torch.tensor([[-100, -100,0,1], [100.0, 100.0,0,1], [7, 75.0,0,1],
 [100.0, 25.0,0,1], [75.0, 125.0,0,1], [25.0, 50.0,0,1]],requires_grad = True) 
 #perturb
-M=torch.tensor([[1,0,0,0],
+M=torch.tensor([[0.7,0,0,0],
     [0,0.5,0,0],
     [0,0,1,0],
     [0,-5,0,1]],dtype=torch.float32,requires_grad=True)
 m_shape=shape@M@V@P
 
-#print(m_shape)
-
-"""
-m_shape=torch.tensor([[ 39.0625,  27.3438,  50.0000, -50.0000],
-        [-39.0625, -27.3438,  50.0000, -50.0000],
-        [ -2.7344, -20.5078,  50.0000, -50.0000],
-        [-39.0625,  -6.8359,  50.0000, -50.0000],
-        [-29.2969, -34.1797,  50.0000, -50.0000],
-        [ -9.7656, -13.6719,  50.0000, -50.0000]],requires_grad=True)
-"""
 w=m_shape[:,3]
 h_shape=torch.transpose(m_shape,0,1)/w
 hh_shape=torch.transpose(h_shape,0,1)
@@ -102,14 +67,13 @@ pykay.imwrite(diff.cpu(), 'results/03_test/init_diff.png')
 
 loss = (img - target).pow(2).sum()
 print('loss:', loss.item())
-loss.backward(retain_graph=True)#retain_graph=True
+loss.backward(retain_graph=True)
 print('grad:', M.grad)
 
-#___________________________________________________________________
 
 optimizer = torch.optim.Adam([M], lr=0.001)
 
-its=1000
+its=300
 # Run 200 Adam iterations.
 for t in range(its):
     print('iteration:', t)
