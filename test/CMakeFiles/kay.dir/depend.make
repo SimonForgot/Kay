@@ -122,9 +122,12 @@ CMakeFiles/kay.dir/src/kay.cpp.o: /home/simonforgot/.conda/envs/pytorch/include/
 CMakeFiles/kay.dir/src/kay.cpp.o: /home/simonforgot/.conda/envs/pytorch/include/python3.9/warnings.h
 CMakeFiles/kay.dir/src/kay.cpp.o: /home/simonforgot/.conda/envs/pytorch/include/python3.9/weakrefobject.h
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/kay.cpp
+CMakeFiles/kay.dir/src/kay.cpp.o: ../src/kay.h
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/ptr.h
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/render.h
 
+CMakeFiles/kay.dir/src/render.cpp.o: ../src/kmath.h
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/ptr.h
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/render.cpp
+CMakeFiles/kay.dir/src/render.cpp.o: ../src/render.h
 

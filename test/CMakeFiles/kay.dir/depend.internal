@@ -123,8 +123,11 @@ CMakeFiles/kay.dir/src/kay.cpp.o
  /home/simonforgot/.conda/envs/pytorch/include/python3.9/warnings.h
  /home/simonforgot/.conda/envs/pytorch/include/python3.9/weakrefobject.h
  /home/simonforgot/repo/Kay/src/kay.cpp
+ /home/simonforgot/repo/Kay/src/kay.h
  /home/simonforgot/repo/Kay/src/ptr.h
  /home/simonforgot/repo/Kay/src/render.h
 CMakeFiles/kay.dir/src/render.cpp.o
+ /home/simonforgot/repo/Kay/src/kmath.h
  /home/simonforgot/repo/Kay/src/ptr.h
  /home/simonforgot/repo/Kay/src/render.cpp
+ /home/simonforgot/repo/Kay/src/render.h

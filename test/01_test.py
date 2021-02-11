@@ -12,6 +12,7 @@ objs = []
 bunny = pykay.OBJ("./models/bunny/", "bunny1.obj")
 objs.append(bunny)
 
+
 rt = kay.Rtcore()
 vertex = []
 index = []
@@ -116,7 +117,7 @@ pykay.imwrite(image.cpu(), 'results/blinn_phong/image.png')
 
 optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,Shininess,LightColor], lr=0.1)
 # Run 200 Adam iterations.
-its=50
+its=5
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()
