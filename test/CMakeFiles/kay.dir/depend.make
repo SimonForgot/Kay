@@ -126,6 +126,16 @@ CMakeFiles/kay.dir/src/kay.cpp.o: ../src/kay.h
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/ptr.h
 CMakeFiles/kay.dir/src/kay.cpp.o: ../src/render.h
 
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_buffer.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_builder.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_common.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_config.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_device.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_geometry.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_ray.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../embree/include/embree3/rtcore_scene.h
+CMakeFiles/kay.dir/src/render.cpp.o: ../src/kay.h
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/kmath.h
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/ptr.h
 CMakeFiles/kay.dir/src/render.cpp.o: ../src/render.cpp

@@ -127,6 +127,16 @@ CMakeFiles/kay.dir/src/kay.cpp.o
  /home/simonforgot/repo/Kay/src/ptr.h
  /home/simonforgot/repo/Kay/src/render.h
 CMakeFiles/kay.dir/src/render.cpp.o
+ ../embree/include/embree3/rtcore.h
+ ../embree/include/embree3/rtcore_buffer.h
+ ../embree/include/embree3/rtcore_builder.h
+ ../embree/include/embree3/rtcore_common.h
+ ../embree/include/embree3/rtcore_config.h
+ ../embree/include/embree3/rtcore_device.h
+ ../embree/include/embree3/rtcore_geometry.h
+ ../embree/include/embree3/rtcore_ray.h
+ ../embree/include/embree3/rtcore_scene.h
+ /home/simonforgot/repo/Kay/src/kay.h
  /home/simonforgot/repo/Kay/src/kmath.h
  /home/simonforgot/repo/Kay/src/ptr.h
  /home/simonforgot/repo/Kay/src/render.cpp

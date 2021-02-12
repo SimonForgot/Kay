@@ -11,8 +11,6 @@ class RenderFunction(torch.autograd.Function):
     @staticmethod
     def forward(ctx, shape,p_num,indix,tri_num,mv_shape,f_dist,pic_size):
         image = torch.zeros(pic_size, pic_size, 3)
-        #worldwide  direction light,up to down,height=100
-        light_dir=pykay.normalize(torch.tensor([0.,-1,0]))
         normals=[]
         for i in indix:
             p=[]
@@ -26,13 +24,16 @@ class RenderFunction(torch.autograd.Function):
         normals=torch.stack(normals)
         #C++ renderer
         start = time.time()
+    
         kay.render(kay.float_ptr(mv_shape.data_ptr()), 
                 p_num,
                 kay.unsigned_int_ptr(indix.data_ptr()),
                 tri_num,
                 f_dist,  
                 pic_size,
+                kay.float_ptr(normals.data_ptr()),
                 kay.float_ptr(image.data_ptr()))
+
         time_elapsed = time.time() - start
         print('Forward pass, time: %.5f s' % time_elapsed)
         #parameters pass
@@ -40,9 +41,7 @@ class RenderFunction(torch.autograd.Function):
         ctx.p_num = p_num
         ctx.indix = indix
         ctx.tri_num = tri_num
-        ctx.color = color
         ctx.normals=normals
-
         return image
 
     @staticmethod

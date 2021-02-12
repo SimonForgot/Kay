@@ -65,7 +65,7 @@ def shade_blinn_phong(geo_id, prim_id, p, wo):
     s_temp = torch.pow(torch.max(torch.Tensor([t, 0.0]).to(device)), Shininess)
     #return Ks*LightColor*(x)
     return LightColor/(100-p[1]*p[1])*(Kd*d_temp+Ks*s_temp)+Ka*Ia
-
+                                           
 def shade_cook(geo_id, prim_id, p, wo):
     hit_obj = objs[geo_id]
     n = torch.Tensor(
@@ -91,12 +91,13 @@ def render():
                 pixel_pos = left_up - (i+random.random())*2*temp / \
                     pic_res*c.up + (j+random.random())*2*temp/pic_res*right
                 dir = pykay.normalize(pixel_pos - c.pos)
+                #dir = pixel_pos - c.pos
                 r = pykay.ray(c.pos, dir)
                 rc = rt.intersect(r.o[0], r.o[1], r.o[2],
                                   r.d[0], r.d[1], r.d[2])
                 if rc.hit_flag:
                     image[i][j] += shade_blinn_phong(rc.geo_id, rc.prim_id,
-                                         pixel_pos+dir*rc.dist, dir)
+                                         c.pos+dir*rc.dist, dir)
                 else:
                     # env background color
                     image[i][j] += torch.Tensor([0, 0, 0.0]
@@ -117,7 +118,7 @@ pykay.imwrite(image.cpu(), 'results/blinn_phong/image.png')
 
 optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,Shininess,LightColor], lr=0.1)
 # Run 200 Adam iterations.
-its=5
+its=0
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()

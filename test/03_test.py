@@ -1,20 +1,17 @@
-from subprocess import call
 import torch
 import pykay
 import kay
-import random
-from tqdm import tqdm
 
 render = pykay.RenderFunction.apply
 
 pic_size=256
 #shape=torch.tensor([[100.0, 100.0,0,1],[7, 75.0,0,1],[-100, -100,0,1],  
 #[25.0, 50.0,0,1], [100.0, 25.0,0,1], [75.0, 125.0,0,1]],requires_grad = True) 
-cube = pykay.OBJ("./models/", "cube.obj")
+cube = pykay.OBJ("./models/", "bunny_big.obj")
 #obj info load
 v_num=cube.vcount
 f_num=cube.fcount
-
+print(v_num,f_num)
 ones=torch.ones(v_num,1)
 shape=torch.tensor(cube.vertices).view(v_num,3)
 shape=torch.cat((shape,ones),1)
@@ -49,9 +46,9 @@ f_shape=hh_shape.mul(torch.tensor([1.,-1,1,1]))+torch.tensor([1.,1,0,0])
 t_shape=f_shape*torch.tensor([pic_size/2,pic_size/2,1.,1])
 
 
-target = render(t_shape,v_num,indices,f_num,mv_shape,n,pic_size)
+target = render(t_shape,v_num,indices,f_num,mv_shape,float(n),pic_size)
 pykay.imwrite(target.cpu(), 'results/03_test/target.png')
-
+#_______________________________________________________________________
 #perturb
 M=torch.tensor([[0.7,0,0,0],
     [0,0.5,0,0],
