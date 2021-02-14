@@ -2,8 +2,6 @@ import torch
 import pykay
 import kay
 import time
-
-
 class RenderFunction(torch.autograd.Function):
     """
         The PyTorch interface of C++ kay.
@@ -11,6 +9,7 @@ class RenderFunction(torch.autograd.Function):
     @staticmethod
     def forward(ctx, shape,p_num,indix,tri_num,mv_shape,f_dist,pic_size):
         image = torch.zeros(pic_size, pic_size, 3)
+        
         normals=[]
         for i in indix:
             p=[]
@@ -22,9 +21,9 @@ class RenderFunction(torch.autograd.Function):
             n=pykay.normalize(n)
             normals.append(n)
         normals=torch.stack(normals)
-        #C++ renderer
+        #print(normals)
         start = time.time()
-    
+        #C++ renderer
         kay.render(kay.float_ptr(mv_shape.data_ptr()), 
                 p_num,
                 kay.unsigned_int_ptr(indix.data_ptr()),
@@ -41,7 +40,11 @@ class RenderFunction(torch.autograd.Function):
         ctx.p_num = p_num
         ctx.indix = indix
         ctx.tri_num = tri_num
-        ctx.normals=normals
+        ctx.normals=normals#later use
+        ctx.pic_size=pic_size
+        ctx.mv_shape=mv_shape
+        ctx.f_dist=f_dist
+        ctx.img=image
         return image
 
     @staticmethod
@@ -50,15 +53,20 @@ class RenderFunction(torch.autograd.Function):
         p_num = ctx.p_num
         indix = ctx.indix
         tri_num = ctx.tri_num
-        color = ctx.color
-        ctx.normals=normals
+        normals=ctx.normals
+        pic_size=ctx.pic_size
+        
+    
         d_shape=torch.zeros(p_num, 4)
-
+        
         kay.d_render(kay.float_ptr(shape.data_ptr()), 
+                kay.float_ptr(mv_shape.data_ptr()), 
                 p_num,
                 kay.unsigned_int_ptr(indix.data_ptr()),
                 tri_num,
-                kay.float_ptr(color.data_ptr()),
+                f_dist, 
+                pic_size,
                 kay.float_ptr(grad_img.data_ptr()),
+                kay.float_ptr(normals.data_ptr()),
                 kay.float_ptr(d_shape.data_ptr()))
-        return tuple([d_shape,None,None,None,None,None])
+        return tuple([d_shape,None,None,None,None,None,None])
