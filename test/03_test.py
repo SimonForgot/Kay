@@ -7,7 +7,7 @@ render = pykay.RenderFunction.apply
 pic_size=256
 #shape=torch.tensor([[100.0, 100.0,0,1],[7, 75.0,0,1],[-100, -100,0,1],  
 #[25.0, 50.0,0,1], [100.0, 25.0,0,1], [75.0, 125.0,0,1]],requires_grad = True) 
-cube = pykay.OBJ("./models/", "triangle.obj")#bunny_big.obj
+cube = pykay.OBJ("./models/", "triangle.obj")#"bunny_big.obj"
 #obj info load
 v_num=cube.vcount
 f_num=cube.fcount
@@ -18,6 +18,7 @@ shape=torch.tensor(cube.vertices).view(v_num,3)
 shape=torch.cat((shape,ones),1)
 indices=torch.tensor(cube.faces).view(f_num,3)
 
+#right hand coodinate
 M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
@@ -29,13 +30,14 @@ V=torch.tensor([[1,0,0,0],
     [0,0,-eye_pos,1]],dtype=torch.float32)
 n=50.0
 f=100.0
+#real view volume z(0,-50)
 r=pic_size/2
 t=pic_size/2
 P=torch.tensor([[-n/r,0,0,0],
     [0,-n/t,0,0],
     [0,0,(n+f)/(f-n),1],
     [0,0,(2*f*n)/(f-n),0]],dtype=torch.float32)
-#m_shape need to be passed & used  for  importance sampling
+#mv_shape needs to be passed & used  for  importance sampling
 m_shape=shape@M
 mv_shape=m_shape@V
 mvp_shape=mv_shape@P
@@ -77,7 +79,7 @@ print('grad:', M.grad)
 
 optimizer = torch.optim.Adam([M], lr=0.01)
 
-its=200
+its=0
 # Run 200 Adam iterations.
 for t in range(its):
     print('iteration:', t)

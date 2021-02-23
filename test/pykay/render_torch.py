@@ -11,6 +11,7 @@ class RenderFunction(torch.autograd.Function):
         image = torch.zeros(pic_size, pic_size, 3)
         
         normals=[]
+        colors=[]
         for i in indix:
             p=[]
             for j in range(3):
@@ -19,9 +20,17 @@ class RenderFunction(torch.autograd.Function):
             e1=(p[2]-p[1])[0:3]
             n=torch.cross(e0,e1)
             n=pykay.normalize(n)
+           
+            #shade
+            temp=torch.tensor([0.0,n.dot(torch.tensor([0.0,1.0,0.0]))])
+            c=torch.max(temp)
+            
+            colors.append(c*torch.tensor([1.0,1.0,1.0]))
             normals.append(n)
         normals=torch.stack(normals)
-        #print(normals)
+        colors=torch.stack(colors)
+        
+
         start = time.time()
         #C++ renderer
         kay.render(kay.float_ptr(mv_shape.data_ptr()), 
@@ -30,7 +39,7 @@ class RenderFunction(torch.autograd.Function):
                 tri_num,
                 f_dist,  
                 pic_size,
-                kay.float_ptr(normals.data_ptr()),
+                kay.float_ptr(colors.data_ptr()),
                 kay.float_ptr(image.data_ptr()))
 
         time_elapsed = time.time() - start
@@ -41,12 +50,15 @@ class RenderFunction(torch.autograd.Function):
         ctx.indix = indix
         ctx.tri_num = tri_num
         ctx.normals=normals#later use
+        ctx.colors=colors#later use
         ctx.pic_size=pic_size
         ctx.mv_shape=mv_shape
         ctx.f_dist=f_dist
-        ctx.img=image
+        
         return image
 
+
+#give up back faces
     @staticmethod
     def backward(ctx, grad_img):
         shape = ctx.shape
@@ -56,7 +68,6 @@ class RenderFunction(torch.autograd.Function):
         normals=ctx.normals
         pic_size=ctx.pic_size
         
-    
         d_shape=torch.zeros(p_num, 4)
         
         kay.d_render(kay.float_ptr(shape.data_ptr()), 
@@ -68,5 +79,6 @@ class RenderFunction(torch.autograd.Function):
                 pic_size,
                 kay.float_ptr(grad_img.data_ptr()),
                 kay.float_ptr(normals.data_ptr()),
+                kay.float_ptr(colors.data_ptr()),
                 kay.float_ptr(d_shape.data_ptr()))
         return tuple([d_shape,None,None,None,None,None,None])
