@@ -2,8 +2,8 @@
 # www.blender.org
 o Cube.001
 v 0 0 0
-v 100 0 0
-v 0 100 -50
+v 128 0 0
+v 0 128 -50
 f 1 2 3
 
 

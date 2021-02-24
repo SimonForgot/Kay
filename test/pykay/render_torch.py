@@ -20,17 +20,14 @@ class RenderFunction(torch.autograd.Function):
             e1=(p[2]-p[1])[0:3]
             n=torch.cross(e0,e1)
             n=pykay.normalize(n)
-           
             #shade
             temp=torch.tensor([0.0,n.dot(torch.tensor([0.0,1.0,0.0]))])
             c=torch.max(temp)
-            
             colors.append(c*torch.tensor([1.0,1.0,1.0]))
             normals.append(n)
         normals=torch.stack(normals)
         colors=torch.stack(colors)
         
-
         start = time.time()
         #C++ renderer
         kay.render(kay.float_ptr(mv_shape.data_ptr()), 
@@ -54,7 +51,6 @@ class RenderFunction(torch.autograd.Function):
         ctx.pic_size=pic_size
         ctx.mv_shape=mv_shape
         ctx.f_dist=f_dist
-        
         return image
 
 
@@ -62,10 +58,13 @@ class RenderFunction(torch.autograd.Function):
     @staticmethod
     def backward(ctx, grad_img):
         shape = ctx.shape
+        mv_shape=ctx.mv_shape
         p_num = ctx.p_num
         indix = ctx.indix
         tri_num = ctx.tri_num
         normals=ctx.normals
+        colors=ctx.colors
+        f_dist=ctx.f_dist
         pic_size=ctx.pic_size
         
         d_shape=torch.zeros(p_num, 4)
