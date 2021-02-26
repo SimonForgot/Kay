@@ -7,7 +7,7 @@ render = pykay.RenderFunction.apply
 pic_size=256
 #shape=torch.tensor([[100.0, 100.0,0,1],[7, 75.0,0,1],[-100, -100,0,1],  
 #[25.0, 50.0,0,1], [100.0, 25.0,0,1], [75.0, 125.0,0,1]],requires_grad = True) 
-cube = pykay.OBJ("./models/", "triangle.obj")#""bunny_big.obj
+cube = pykay.OBJ("./models/",  "bunny_big.obj")#""triangle.obj"  "bunny_big.obj"
 #obj info load
 v_num=cube.vcount
 f_num=cube.fcount
@@ -23,10 +23,15 @@ indices=torch.tensor(cube.faces).view(f_num,3)
 
 #right hand coodinate
 #put obj near zero point
+arg=torch.tensor([0.0],requires_grad=True)
+aux= torch.tensor([[1,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]],dtype=torch.float32)
 M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
-    [0,0,0,1]],requires_grad=True)
+    [0,0,0,1]],dtype=torch.float32)+arg*aux
 eye_pos=50
 V=torch.tensor([[1,0,0,0],
     [0,1,0,0],
@@ -61,10 +66,15 @@ pykay.imwrite(target.cpu(), 'results/03_test/target.png')
 target = pykay.imread("results/03_test/target.png")
 #_______________________________________________________________________
 #perturb
-M=torch.tensor([[0.8,0,0,0],
+arg=torch.tensor([-0.3],requires_grad=True)
+aux= torch.tensor([[1,0,0,100],
+    [0,0,0,100],
+    [0,0,0,0],
+    [0,0,0,0]],dtype=torch.float32)
+M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
-    [0,0,0,1]],dtype=torch.float32,requires_grad=True)
+    [0,0,0,1]],dtype=torch.float32)+arg*aux
 m_shape=M@shape
 mv_shape=V@m_shape
 mvp_shape=P@mv_shape
@@ -86,16 +96,20 @@ pykay.imwrite(diff.cpu(), 'results/03_test/init_diff.png')
 loss = (img - target).pow(2).sum()
 print('loss:', loss.item())
 loss.backward(retain_graph=True)
-print('grad:', M.grad)
+print('grad:', arg.grad)
 
-optimizer = torch.optim.Adam([M], lr=0.001)
+optimizer = torch.optim.Adam([arg], lr=0.0005)
 
-its=200
+its=500
 # Run 200 Adam iterations.
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()
 
+    M=torch.tensor([[1,0.,0,0],
+    [0,1,0,0],
+    [0,0,1,0],
+    [0,0,0,1]],dtype=torch.float32)+arg*aux
     m_shape=M@shape
     mv_shape=V@m_shape
     mvp_shape=P@mv_shape
@@ -114,12 +128,12 @@ for t in range(its):
     loss = (img - target).pow(2).sum()
     print('loss:', loss.item())
     loss.backward(retain_graph=True)#retain_graph=True
-    print('grad:', M.grad)
+    print('grad:', arg.grad)
     optimizer.step()
-    print('M:', M)
+    print('arg:', arg)
 
 if its>0:
     from subprocess import call
-    call(["ffmpeg", "-framerate", "10", "-i",
+    call(["ffmpeg", "-framerate", "24", "-i",
         "results/03_test_optimize/iter_%d.png", "-vb", "20M",
         "results/03_test/out.mp4"])
