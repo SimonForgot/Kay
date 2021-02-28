@@ -66,7 +66,7 @@ class RenderFunction(torch.autograd.Function):
         colors=ctx.colors
         f_dist=ctx.f_dist
         pic_size=ctx.pic_size
-        
+        #print(normals)
         d_shape=torch.zeros(p_num, 4)
         
         kay.d_render(kay.float_ptr(shape.data_ptr()), 
