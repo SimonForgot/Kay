@@ -1,63 +1,13 @@
-#include <random>
-#include "ptr.h"
-#include <iostream>
+#include"render.h"
+#include <cmath>
+#include<stdio.h>
 #include <vector>
 #include <set>
 #include <algorithm>
-using Real = float;
+#include <random>
+#include "kay.h"
+#include"kmath.h"
 
-// some basic vector operations
-template <typename T>
-struct Vec2
-{
-    T x, y;
-    Vec2(T x = 0, T y = 0) : x(x), y(y) {}
-};
-template <typename T>
-struct Vec3
-{
-    T x, y, z;
-    Vec3(T x = 0, T y = 0, T z = 0) : x(x), y(y), z(z) {}
-};
-using Vec2f = Vec2<Real>;
-using Vec3i = Vec3<int>;
-using Vec3f = Vec3<Real>;
-Vec2f operator+(const Vec2f &v0, const Vec2f &v1) { return Vec2f{v0.x + v1.x, v0.y + v1.y}; }
-Vec2f &operator+=(Vec2f &v0, const Vec2f &v1)
-{
-    v0.x += v1.x;
-    v0.y += v1.y;
-    return v0;
-}
-Vec2f operator-(const Vec2f &v0, const Vec2f &v1) { return Vec2f{v0.x - v1.x, v0.y - v1.y}; }
-Vec2f operator*(Real s, const Vec2f &v) { return Vec2f{v.x * s, v.y * s}; }
-Vec2f operator*(const Vec2f &v, Real s) { return Vec2f{v.x * s, v.y * s}; }
-Vec2f operator/(const Vec2f &v, Real s) { return Vec2f{v.x / s, v.y / s}; }
-Real dot(const Vec2f &v0, const Vec2f &v1) { return v0.x * v1.x + v0.y * v1.y; }
-Real length(const Vec2f &v) { return sqrt(dot(v, v)); }
-Vec2f normal(const Vec2f &v) { return Vec2f{-v.y, v.x}; }
-Vec3f &operator+=(Vec3f &v0, const Vec3f &v1)
-{
-    v0.x += v1.x;
-    v0.y += v1.y;
-    v0.z += v1.z;
-    return v0;
-}
-Vec3f operator-(const Vec3f &v0, const Vec3f &v1) { return Vec3f{v0.x - v1.x, v0.y - v1.y, v0.z - v1.z}; }
-Vec3f operator-(const Vec3f &v) { return Vec3f{-v.x, -v.y, -v.z}; }
-Vec3f operator*(const Vec3f &v, Real s) { return Vec3f{v.x * s, v.y * s, v.z * s}; }
-Vec3f operator*(Real s, const Vec3f &v) { return Vec3f{v.x * s, v.y * s, v.z * s}; }
-Vec3f operator/(const Vec3f &v, Real s) { return Vec3f{v.x / s, v.y / s, v.z / s}; }
-Real dot(const Vec3f &v0, const Vec3f &v1) { return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z; }
-template <typename T>
-T clamp(T v, T l, T u)
-{
-    if (v < l)
-        return l;
-    else if (v > u)
-        return u;
-    return v;
-}
 struct TriangleMesh
 {
     std::vector<Vec2f> vertices;
@@ -65,60 +15,52 @@ struct TriangleMesh
     std::vector<Vec3f> colors; // defined for each face
 };
 
-Vec3f raytrace(const TriangleMesh &mesh,
-               const Vec2f &screen_pos,
-               int *hit_index = nullptr)
-{
-    // loop over all triangles in a mesh, return the first one that hits
-    for (int i = 0; i < (int)mesh.indices.size(); i++)
-    {
-        // retrieve the three vertices of a triangle
-        auto index = mesh.indices[i];
-        auto v0 = mesh.vertices[index.x], v1 = mesh.vertices[index.y], v2 = mesh.vertices[index.z];
-        // form three half-planes: v1-v0, v2-v1, v0-v2
-        // if a point is on the same side of all three half-planes, it's inside the triangle.
-        auto n01 = normal(v1 - v0), n12 = normal(v2 - v1), n20 = normal(v0 - v2);
-        auto side01 = dot(screen_pos - v0, n01) > 0;
-        auto side12 = dot(screen_pos - v1, n12) > 0;
-        auto side20 = dot(screen_pos - v2, n20) > 0;
-        if ((side01 && side12 && side20) || (!side01 && !side12 && !side20))
-        {
-            if (hit_index != nullptr)
-            {
-                *hit_index = i;
-            }
-            return mesh.colors[i];
-        }
-    }
-    // return background
-    if (hit_index != nullptr)
-    {
-        *hit_index = -1;
-    }
-    return Vec3f{0, 0, 0};
-}
-void render(ptr<float> shape,
+
+void render(ptr<float> mv_shape,
             int p_num,
             ptr<unsigned int> indices,
             int tri_num,
-            ptr<float> color,
+            float f_dist,
+             int pic_res,
+             ptr<float> colors,
             ptr<float> rendered_image)
 {
-    int pic_res = 256;
-    TriangleMesh mesh;
-    for (auto i = 0; i < p_num; i++)
-        mesh.vertices.push_back({shape[4 * i], shape[4 * i + 1]});
-    for (auto i = 0; i < tri_num; i++)
-        mesh.indices.push_back({indices[3 * i], indices[3 * i + 1], indices[3 * i + 2]});
-    for (auto i = 0; i < tri_num; i++)
-        mesh.colors.push_back({color[3 * i], color[3 * i + 1], color[3 * i + 2]});
+    float shape[3*p_num];
+    float *p_mv_shape=mv_shape.get();
+    for(auto i=0;i<p_num;i++)
+    {
+        shape[3*i]=p_mv_shape[i];
+        shape[3*i+1]=p_mv_shape[i+p_num];
+        shape[3*i+2]=p_mv_shape[i+2*p_num];
+        //printf("pos:%f  %f  %f\n",shape[3*i],shape[3*i+1],shape[3*i+2]);
+    }
 
+    unsigned int*p_indices=indices.get();
+    unsigned indix[3*tri_num];
+    float color[3*tri_num];
+    for(auto i=0;i<tri_num;i++)
+    {
+        indix[3*i]=p_indices[6*i];
+        indix[3*i+1]=p_indices[6*i+2];
+        indix[3*i+2]=p_indices[6*i+4];
+        //printf("%u %u %u\n", indix[3*i], indix[3*i+1], indix[3*i+2]);
+        color[3*i]=colors[3*i];
+        color[3*i+1]=colors[3*i+1];
+        color[3*i+2]=colors[3*i+2];
+    }
+
+   
+    //embree render setup
+    Rtcore rt{};
+    rt.addGeo(shape, indix, p_num, tri_num);
+    rt.RTsetup();
+    
     std::uniform_real_distribution<float> uni_dist(0, 1);
     std::mt19937 rng(1234);
     int samples_per_pixel = 4;
     auto sqrt_num_samples = (int)sqrt((float)samples_per_pixel);
     samples_per_pixel = sqrt_num_samples * sqrt_num_samples;
-    for (int y = 0; y < pic_res; y++)
+    for (int y = 0; y <pic_res; y++)
     { // for each pixel
         for (int x = 0; x < pic_res; x++)
         {
@@ -128,12 +70,21 @@ void render(ptr<float> shape,
                 {
                     auto xoff = (dx + uni_dist(rng)) / sqrt_num_samples;
                     auto yoff = (dy + uni_dist(rng)) / sqrt_num_samples;
-                    auto screen_pos = Vec2f{x + xoff, y + yoff};
-                    auto color = raytrace(mesh, screen_pos);
-                    auto temp = color / samples_per_pixel;
-                    rendered_image[3 * (y * pic_res + x)] += temp.x;
-                    rendered_image[3 * (y * pic_res + x) + 1] += temp.y;
-                    rendered_image[3 * (y * pic_res + x) + 2] += temp.z;
+                    auto screen_pos = Vec2f{x + xoff-(pic_res/2), y + yoff-(pic_res/2)};
+                    
+                    auto dir=normalize(Vec3f{screen_pos.x,screen_pos.y,-f_dist});//
+                    //printf("%f %f %f\n",screen_pos.x,screen_pos.y,-f_dist);
+                    Rtrc record= rt.intersect(0,0,0, dir.x,dir.y,dir.z);
+                    auto idx=record.prim_id;
+                    
+                    auto p_color = record.hit_flag?Vec3f{color[3*idx],color[3*idx+1],color[3*idx+2]}:Vec3f{0,0,0};
+                   
+                    auto temp = p_color / samples_per_pixel;
+                    auto id=3*((pic_res-y)* pic_res + x); 
+                   
+                    rendered_image[ id] += temp.x;
+                    rendered_image[id+ 1] += temp.y;
+                    rendered_image[id+ 2] += temp.z;
                 }
             }
         }
@@ -142,9 +93,9 @@ void render(ptr<float> shape,
 struct Edge
 {
     int v0, v1; // vertex ID, v0 < v1
-
-    Edge(int v0, int v1) : v0(std::min(v0, v1)), v1(std::max(v0, v1)) {}
-
+    bool view_n;
+    bool light_n;
+    Edge(int v0, int v1,bool vn=false,bool ln=false) : v0(std::min(v0, v1)), v1(std::max(v0, v1)),view_n(vn),light_n(ln) {}
     // for sorting edges
     bool operator<(const Edge &e) const
     {
@@ -161,7 +112,6 @@ struct Img
     {
         color.resize(width * height, val);
     }
-
     std::vector<Vec3f> color;
     int width;
     int height;
@@ -176,11 +126,17 @@ Sampler build_edge_sampler(const TriangleMesh &mesh,
     pmf.reserve(edges.size());
     cdf.reserve(edges.size() + 1);
     cdf.push_back(0);
+   
     for (auto edge : edges)
     {
         auto v0 = mesh.vertices[edge.v0];
         auto v1 = mesh.vertices[edge.v1];
-        pmf.push_back(length(v1 - v0));
+        int mul=10;
+        if(edge.view_n)mul=2*mul;
+        if(edge.light_n)mul=2*mul;
+        //switch mul 531
+        //mul=1;
+        pmf.push_back(mul*length(v1 - v0));
         cdf.push_back(pmf.back() + cdf.back());
     }
     auto length_sum = cdf.back();
@@ -200,14 +156,21 @@ int sample(const Sampler &sampler, const Real u)
 }
 
 // given a triangle mesh, collect all edges.
-std::vector<Edge> collect_edges(const TriangleMesh &mesh)
+std::vector<Edge> collect_edges(const TriangleMesh &mesh,ptr<float> normals)
 {
     std::set<Edge> edges;
+    int i=0;
     for (auto index : mesh.indices)
     {
-        edges.insert(Edge(index.x, index.y));
-        edges.insert(Edge(index.y, index.z));
-        edges.insert(Edge(index.z, index.x));
+        bool vn=false,ln=false;
+        Vec3f n=Vec3f{normals[3*i], normals[3*i+1], normals[3*i+2]};
+        if(dot(n,Vec3f{0,0,1})>0.5)vn=true;
+        auto temp=dot(n,Vec3f{0,1,0});
+        if(temp>0&&temp<0.5)ln=true;
+        edges.insert(Edge(index.x, index.y,vn,ln));
+        edges.insert(Edge(index.y, index.z,vn,ln));
+        edges.insert(Edge(index.z, index.x,vn,ln));
+        i++;
     }
     return std::vector<Edge>(edges.begin(), edges.end());
 }
@@ -223,6 +186,9 @@ struct DTriangleMesh
 
 void compute_edge_derivatives(
     const TriangleMesh &mesh,
+    float *shape,//mv_shape
+    float f_dist,
+    int pic_res,
     const std::vector<Edge> &edges,
     const Sampler &edge_sampler,
     const Img &adjoint,
@@ -230,67 +196,130 @@ void compute_edge_derivatives(
     std::mt19937 &rng,
     std::vector<Vec2f> &d_vertices)
 {
-
     std::uniform_real_distribution<float> uni_dist(0, 1);
-
+    int p_num=mesh.vertices.size();
+    int f_num=mesh.indices.size();
+    //std::cout<<p_num<<" "<<f_num<<"\n";
+    //for(auto i=0;i<9;i++)
+    //std::cout<<shape[i]<<" ";
+    //std::cout<<"\n";
+    
+    unsigned indix[3*f_num];
+    for(auto i=0;i<f_num;i++)
+    {
+        indix[3*i]=mesh.indices[i].x;
+        indix[3*i+1]=mesh.indices[i].y;
+        indix[3*i+2]=mesh.indices[i].z;
+        //std::cout<<indix[3*i]<<" "<<indix[3*i+1]<<" "<<indix[3*i+2]<<"\n";
+    }
+    Rtcore rt{};
+    rt.addGeo(shape, indix, p_num, f_num);
+    rt.RTsetup();
+    //num_edge_samples
     for (int i = 0; i < num_edge_samples; i++)
     {
         // pick an edge
-
         auto edge_id = sample(edge_sampler, uni_dist(rng));
         auto edge = edges[edge_id];
         auto pmf = edge_sampler.pmf[edge_id];
         // pick a point p on the edge
         auto v0 = mesh.vertices[edge.v0];
         auto v1 = mesh.vertices[edge.v1];
+        
         auto t = uni_dist(rng);
         auto p = v0 + t * (v1 - v0);
+
+        //std::cout<<v0.x<<" "<<v0.y<<"\n";
+        //std::cout<<v1.x<<" "<<v1.y<<"\n";
+        //std::cout<<p.x<<" "<<p.y<<"\n\n";
         auto xi = (int)p.x;
         auto yi = (int)p.y; // integer coordinates
         if (xi < 0 || yi < 0 || xi >= adjoint.width || yi >= adjoint.height)
         {
             continue;
         }
-
         // sample the two sides of the edge
         auto n = normal((v1 - v0) / length(v1 - v0));
-        auto color_in = raytrace(mesh, p - 1e-3f * n);
-        auto color_out = raytrace(mesh, p + 1e-3f * n);
+        //std::cout<<"p :"<<p.x<<" "<<p.y<<"\n";
+        //p.y=pic_res-p.y;
 
+        auto p1=p - 1e-3f * n;
+        auto p2=p + 1e-3f * n;
+        
+        p1.y=pic_res-p1.y;
+        p2.y=pic_res-p2.y;
+        /*
+        std::cout<<"n : "<<n.x<<" "<<n.y<<"\n";
+        std::cout<<v0.x<<" "<<v0.y<<"\n";
+        std::cout<<v1.x<<" "<<v1.y<<"\n";
+        std::cout<<"p :"<<p.x<<" "<<p.y<<"\n";
+        std::cout<<"p1 :"<<p1.x<<" "<<p1.y<<"\n";
+        std::cout<<"p2 :"<<p2.x<<" "<<p2.y<<"\n";
+        */
+        p1=p1-(pic_res/2)*Vec2f{1,1};
+        p2=p2-(pic_res/2)*Vec2f{1,1};
+        //std::cout<<"p1 :"<<p1.x<<" "<<p1.y<<"\n";
+        //std::cout<<"p2 :"<<p2.x<<" "<<p2.y<<"\n";
+        auto dir=normalize(Vec3f{p1.x,p1.y,-f_dist});
+        //std::cout<<"dir :"<<dir.x<<" "<<dir.y<<" "<<dir.z<<"\n";
+        Rtrc record= rt.intersect(0,0,0, dir.x,dir.y,dir.z);
+        auto color_in=record.hit_flag?mesh.colors[record.prim_id]:Vec3f{0,0,0};// = get_color(image, adjoint.height, p - 1e-3f * n);
+        //if(record.hit_flag)std::cout<<"hit"<<"\n";
+        dir=normalize(Vec3f{p2.x,p2.y,-f_dist});
+        record= rt.intersect(0,0,0, dir.x,dir.y,dir.z);
+        auto color_out=record.hit_flag?mesh.colors[record.prim_id]:Vec3f{0,0,0};
         // get corresponding adjoint from the adjoint image,
         // multiply with the color difference and divide by the pdf & number of samples.
         auto pdf = pmf / (length(v1 - v0));
         auto weight = Real(1 / (pdf * Real(num_edge_samples)));
-        auto adj = dot(color_in - color_out, adjoint.color[yi * adjoint.width + xi]);
-
+        auto adj = dot(color_in - color_out, adjoint.color[yi* adjoint.width + xi]);
         auto d_v0 = Vec2f{(1 - t) * n.x, (1 - t) * n.y} * adj * weight;
         auto d_v1 = Vec2f{t * n.x, t * n.y} * adj * weight;
-
         d_vertices[edge.v0] += d_v0;
         d_vertices[edge.v1] += d_v1;
     }
 }
 
 void d_render(ptr<float> shape,
-              int p_num,
-              ptr<unsigned int> indices,
-              int tri_num,
-              ptr<float> color,
-              ptr<float> grad_img,
-              ptr<float> d_shape)
+            ptr<float> mv_shape,//get color
+            int p_num,
+            ptr<unsigned int> indices,
+            int tri_num,
+            float f_dist,
+            int pic_res,
+            ptr<float> grad_img,
+            ptr<float> normals,//edge sample will use this
+            ptr<float> colors,
+			ptr<float> d_shape)
 {
-    int pic_res = 256;
     TriangleMesh mesh;
+    float Mv_shape[3*p_num];//get color
+    float *p_mv_shape=mv_shape.get();
+    
     for (auto i = 0; i < p_num; i++)
-        mesh.vertices.push_back({shape[4 * i], shape[4 * i + 1]});
+    {
+        mesh.vertices.push_back({shape[i], shape[ i + p_num]});
+        //std::cout<<mesh.vertices[i].x<<" "<<mesh.vertices[i].y<<"\n";
+        Mv_shape[3*i]=p_mv_shape[i];
+        Mv_shape[3*i+1]=p_mv_shape[i+p_num];
+        Mv_shape[3*i+2]=p_mv_shape[i+2*p_num];
+        //std::cout<<Mv_shape[3*i]<<" "<<Mv_shape[3*i+1]<<" "<<Mv_shape[3*i+2]<<"\n";
+    }
+    
     for (auto i = 0; i < tri_num; i++)
-        mesh.indices.push_back({indices[3 * i], indices[3 * i + 1], indices[3 * i + 2]});
-    for (auto i = 0; i < tri_num; i++)
-        mesh.colors.push_back({color[3 * i], color[3 * i + 1], color[3 * i + 2]});
-
+    {
+        mesh.indices.push_back({static_cast<int>(indices[6 * i]), static_cast<int>(indices[6 * i + 2]), static_cast<int>(indices[6 * i + 4])});
+        mesh.colors.push_back({colors[3*i],colors[3*i+1],colors[3*i+2]});    
+    }
+    /*
+    for(auto i=0;i<mesh.colors.size();i++)
+    {
+        std::cout<<mesh.colors[i].x<<" "<<mesh.colors[i].y<<" "<<mesh.colors[i].z<<"\n";
+    }
+    */
     Img adjoint(pic_res, pic_res, Vec3f{1, 1, 1});
     DTriangleMesh d_mesh(mesh.vertices.size());
-    auto edges = collect_edges(mesh);
+    auto edges = collect_edges(mesh,normals);
     auto edge_sampler = build_edge_sampler(mesh, edges);
 
     std::mt19937 rng(1234);
@@ -300,9 +329,10 @@ void d_render(ptr<float> shape,
                                  grad_img[3 * i + 1],
                                  grad_img[3 * i + 2]};
     }
-    compute_edge_derivatives(mesh, edges, edge_sampler, adjoint, 256 * 256,
+    
+    compute_edge_derivatives(mesh, Mv_shape,f_dist,pic_res,edges, edge_sampler, adjoint, 1000 ,
                              rng, d_mesh.vertices);
-
+    
     int s = 0;
     for (auto i : d_mesh.vertices)
     {

@@ -7,7 +7,7 @@ render = pykay.RenderFunction.apply
 pic_size=256
 #shape=torch.tensor([[100.0, 100.0,0,1],[7, 75.0,0,1],[-100, -100,0,1],  
 #[25.0, 50.0,0,1], [100.0, 25.0,0,1], [75.0, 125.0,0,1]],requires_grad = True) 
-cube = pykay.OBJ("./models/",  "triangle.obj")#""triangle.obj"  "bunny_big.obj"
+cube = pykay.OBJ("./models/02/",  "bunny_big.obj")#""triangle.obj"  "bunny_big.obj"
 #obj info load
 v_num=cube.vcount
 f_num=cube.fcount
@@ -100,7 +100,7 @@ print('grad:', arg.grad)
 
 optimizer = torch.optim.Adam([arg], lr=0.0005)
 
-its=0
+its=1000
 # Run 200 Adam iterations.
 for t in range(its):
     print('iteration:', t)
@@ -127,11 +127,13 @@ for t in range(its):
     pykay.imwrite(img.cpu(), 'results/03_test_optimize/iter_{}.png'.format(t))
     loss = (img - target).pow(2).sum()
     print('loss:', loss.item())
+    if loss<1:
+        break
     loss.backward(retain_graph=True)#retain_graph=True
     print('grad:', arg.grad)
     optimizer.step()
     print('arg:', arg)
-
+#587 564
 if its>0:
     from subprocess import call
     call(["ffmpeg", "-framerate", "24", "-i",

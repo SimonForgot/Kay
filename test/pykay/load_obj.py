@@ -12,7 +12,7 @@ class OBJ:
         self.vcount = 0
         self.fcount = 0
         self.light = torch.Tensor([0, 0, 0]).requires_grad_(
-            True)  # by default,no light
+            False)  # by default,no light
         for line in open(fdir+filename, "r"):
             if line.startswith('#'):
                 continue

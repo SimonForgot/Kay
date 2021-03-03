@@ -77,7 +77,7 @@ def shade_cook(geo_id, prim_id, p, wo):
     x = torch.sign(t) * torch.pow(torch.abs(t), Shininess)
     return Ks*LightColor*(x)
 
-ssn = 1
+ssn = 4
 pic_res = 300
 image = torch.zeros(pic_res, pic_res, 3, device=device)
 
@@ -107,9 +107,9 @@ def render():
     return image
 
 
-image = render()
+image = render()#33 sec/4 spp  
 target = pykay.imread(
-    "results/blinn_phong/target.png").to(device)
+    "results/blinn_phong/target.png").to(device)#143 sec
 diff = torch.abs(target - image)
 pykay.imwrite(diff.cpu(), 'results/blinn_phong/init_diff.png')
 pykay.imwrite(image.cpu(), 'results/blinn_phong/image.png')

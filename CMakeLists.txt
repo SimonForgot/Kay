@@ -15,6 +15,8 @@ add_compile_options(-Wall -g -O3 -fvisibility=hidden -Wno-unknown-pragmas)
 
 set(SRCS src/kay.cpp
         src/render.cpp
+        src/kay.h
+        src/kmath.h
         src/render.h
         src/ptr.h)
 
