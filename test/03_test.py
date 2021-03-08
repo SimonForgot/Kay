@@ -1,6 +1,7 @@
 import torch
 import pykay
 import kay
+from visdom import Visdom
 
 render = pykay.RenderFunction.apply
 
@@ -66,15 +67,20 @@ pykay.imwrite(target.cpu(), 'results/03_test/target.png')
 target = pykay.imread("results/03_test/target.png")
 #_______________________________________________________________________
 #perturb
-arg=torch.tensor([-0.3],requires_grad=True)
-aux= torch.tensor([[1,0,0,100],
+arg1=torch.tensor([-0.3],requires_grad=True)
+arg2=torch.tensor([-0.3],requires_grad=True)
+aux1= torch.tensor([[1,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]],dtype=torch.float32)
+aux2= torch.tensor([[0,0,0,100],
     [0,0,0,100],
     [0,0,0,0],
     [0,0,0,0]],dtype=torch.float32)
 M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
-    [0,0,0,1]],dtype=torch.float32)+arg*aux
+    [0,0,0,1]],dtype=torch.float32)+arg1*aux1+arg2*aux2
 m_shape=M@shape
 mv_shape=V@m_shape
 mvp_shape=P@mv_shape
@@ -96,12 +102,22 @@ pykay.imwrite(diff.cpu(), 'results/03_test/init_diff.png')
 loss = (img - target).pow(2).sum()
 print('loss:', loss.item())
 loss.backward(retain_graph=True)
-print('grad:', arg.grad)
+print('grad:', arg1.grad,arg2.grad)
 
-optimizer = torch.optim.Adam([arg], lr=0.0005)
+optimizer = torch.optim.RMSprop([arg1,arg2], lr=0.001)
 
-its=1000
-# Run 200 Adam iterations.
+its=700
+#250 -1 -1
+#500 -1 yes -1 no
+#750 650 yes -1 no
+#1k 507 yes  -1 no
+#1k5 476 -1
+#2k 456 yes 475 no
+#5k 566 yes 494 no
+#5w 571 yes  586 no
+viz = Visdom() 
+viz.line([[0.]], [0], win='train1', opts=dict(title='grad1'))
+viz.line([[0.]], [0], win='train2', opts=dict(title='grad2'))
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()
@@ -109,7 +125,7 @@ for t in range(its):
     M=torch.tensor([[1,0.,0,0],
     [0,1,0,0],
     [0,0,1,0],
-    [0,0,0,1]],dtype=torch.float32)+arg*aux
+    [0,0,0,1]],dtype=torch.float32)+arg1*aux1+arg2*aux2
     m_shape=M@shape
     mv_shape=V@m_shape
     mvp_shape=P@mv_shape
@@ -127,13 +143,16 @@ for t in range(its):
     pykay.imwrite(img.cpu(), 'results/03_test_optimize/iter_{}.png'.format(t))
     loss = (img - target).pow(2).sum()
     print('loss:', loss.item())
-    if loss<1:
-        break
+    #if loss<1:
+    #    break
     loss.backward(retain_graph=True)#retain_graph=True
-    print('grad:', arg.grad)
+    print('grad:', arg1.grad,arg2.grad)
+
+    viz.line([[arg1.grad]], [t], win='train1', update='append')
+    viz.line([[arg2.grad]], [t], win='train2', update='append')
     optimizer.step()
-    print('arg:', arg)
-#587 564
+    print('arg:', arg1,arg2)
+
 if its>0:
     from subprocess import call
     call(["ffmpeg", "-framerate", "24", "-i",

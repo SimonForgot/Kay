@@ -94,18 +94,8 @@ def shade_blinn_phong(geo_id, prim_id, p, wo):
     t = n.dot(h)
     d_temp=torch.max(torch.Tensor([n.dot(-light_dir), 0.0]))
     s_temp = torch.pow(torch.max(torch.Tensor([t, 0.0])), Shininess)
-    return LightColor/(100-p[1]*p[1])*(Kd*d_temp+Ks*s_temp)+Ka*Ia
+    return LightColor/(100-p[1]*p[1])*(Kd*d_temp+Ks*s_temp)
     
-def shade_cook(geo_id, prim_id, p, wo):
-    hit_obj = objs[geo_id]
-    n = torch.Tensor(
-        [hit_obj.normals[3*prim_id],
-         hit_obj.normals[3*prim_id+1],
-         hit_obj.normals[3*prim_id+2]])
-    h = pykay.normalize(-light_dir-wo)
-    t = n.dot(h)
-    x = torch.sign(t) * torch.pow(torch.abs(t), Shininess)
-    return Ks*LightColor*(x)
 
 ssn = 1
 image = torch.zeros(pic_res, pic_res, 3)
@@ -123,8 +113,7 @@ def render():
                 rc = rt.intersect(r.o[0], r.o[1], r.o[2],
                                   r.d[0], r.d[1], r.d[2])
                 if rc.hit_flag:
-                    image[i][j] += shade_blinn_phong(rc.geo_id, rc.prim_id,
-                                        pixel_pos+dir*rc.dist, dir)#*ao_image[i][j]
+                    image[i][j] += Ia*ao_image[i][j]#shade_blinn_phong(rc.geo_id, rc.prim_id,pixel_pos+dir*rc.dist, dir)+Ia*Ka#Ka#ao_image[i][j]
                 else:
                     image[i][j] += torch.Tensor([0, 0, 0.0]).requires_grad
             image[i][j] /= ssn
@@ -132,6 +121,8 @@ def render():
 
 
 image = render()
+#pykay.imwrite(image.cpu(), 'results/blinn_phong/AO.png')
+#input()
 target = pykay.imread(
     "results/blinn_phong/target.png")
 diff = torch.abs(target - image)
@@ -145,7 +136,7 @@ print('grad:', Ks.grad, Kd.grad, Ka.grad,Ia.grad,Shininess.grad)
 
 optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,Shininess], lr=0.1)
 # Run 200 Adam iterations.
-its=0
+its=200
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()

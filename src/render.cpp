@@ -164,9 +164,10 @@ std::vector<Edge> collect_edges(const TriangleMesh &mesh,ptr<float> normals)
     {
         bool vn=false,ln=false;
         Vec3f n=Vec3f{normals[3*i], normals[3*i+1], normals[3*i+2]};
-        if(dot(n,Vec3f{0,0,1})>0.5)vn=true;
-        auto temp=dot(n,Vec3f{0,1,0});
-        if(temp>0&&temp<0.5)ln=true;
+        auto temp1=dot(n,Vec3f{0,0,1});
+        if(temp1>0&&temp1<0.5)vn=true;
+        auto temp2=dot(n,Vec3f{0,1,0});
+        if(temp2>0&&temp2<0.5)ln=true;
         edges.insert(Edge(index.x, index.y,vn,ln));
         edges.insert(Edge(index.y, index.z,vn,ln));
         edges.insert(Edge(index.z, index.x,vn,ln));
