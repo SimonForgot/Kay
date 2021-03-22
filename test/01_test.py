@@ -49,39 +49,43 @@ light_dir = pykay.normalize(torch.Tensor([0, -1, 0]))
 rough = torch.Tensor([10.0])
 rough.requires_grad = True
 
+ssn = 8
+
 ao_image = torch.zeros(pic_res, pic_res, 3)
 for i in tqdm(range(pic_res)):
     for j in range(pic_res):
-        pixel_pos = left_up - (i+random.random())*2*temp / \
-        pic_res*c.up + (j+random.random())*2*temp/pic_res*right
-        dir = pykay.normalize(pixel_pos - c.pos)
-        r = pykay.ray(c.pos, dir)
-        rc = rt.intersect(r.o[0], r.o[1], r.o[2],r.d[0], r.d[1], r.d[2])
-        if rc.hit_flag:
-            geo_id=rc.geo_id
-            prim_id=rc.prim_id
-            hit_obj = objs[geo_id]
-            n = torch.Tensor([hit_obj.normals[3*prim_id],hit_obj.normals[3*prim_id+1],hit_obj.normals[3*prim_id+2]])
-            p=c.pos+dir*(rc.dist-0.00001)
-            count=0
-            ao_count=0
-            while count<64:
-                wz=2*random.random()-1
-                r=math.sqrt(1-wz*wz)
-                phi=2*math.pi*random.random()
-                wx=r*math.cos(phi)
-                wy=r*math.sin(phi)
-                sample_dir=pykay.normalize(torch.Tensor([wx,wy,wz]))
-                temp_res=n.dot(sample_dir)
-                if temp_res>0:
-                    ry = pykay.ray(p, sample_dir)
-                    record = rt.intersect(ry.o[0], ry.o[1], ry.o[2],ry.d[0], ry.d[1], ry.d[2])
-                    if record.hit_flag:
-                        ao_count+=1
-                    count+=1
-            ao_image[i][j] +=torch.Tensor([1.0,1.0,1.0])*(1-ao_count*1.0/count)
-        else:
-            ao_image[i][j] += torch.Tensor([0, 0, 0.0]).requires_grad
+        for k in range(ssn):
+            pixel_pos = left_up - (i+random.random())*2*temp / \
+            pic_res*c.up + (j+random.random())*2*temp/pic_res*right
+            dir = pykay.normalize(pixel_pos - c.pos)
+            r = pykay.ray(c.pos, dir)
+            rc = rt.intersect(r.o[0], r.o[1], r.o[2],r.d[0], r.d[1], r.d[2])
+            if rc.hit_flag:
+                geo_id=rc.geo_id
+                prim_id=rc.prim_id
+                hit_obj = objs[geo_id]
+                n = torch.Tensor([hit_obj.normals[3*prim_id],hit_obj.normals[3*prim_id+1],hit_obj.normals[3*prim_id+2]])
+                p=c.pos+dir*(rc.dist-0.00001)
+                count=0
+                ao_count=0
+                while count<64:
+                    wz=2*random.random()-1
+                    r=math.sqrt(1-wz*wz)
+                    phi=2*math.pi*random.random()
+                    wx=r*math.cos(phi)
+                    wy=r*math.sin(phi)
+                    sample_dir=pykay.normalize(torch.Tensor([wx,wy,wz]))
+                    temp_res=n.dot(sample_dir)
+                    if temp_res>0:
+                        ry = pykay.ray(p, sample_dir)
+                        record = rt.intersect(ry.o[0], ry.o[1], ry.o[2],ry.d[0], ry.d[1], ry.d[2])
+                        if record.hit_flag:
+                            ao_count+=1
+                        count+=1
+                ao_image[i][j] +=torch.Tensor([1.0,1.0,1.0])*(1-ao_count*1.0/count)
+            else:
+                ao_image[i][j] += torch.Tensor([0, 0, 0.0]).requires_grad
+        ao_image[i][j] /= ssn
 print("ao_image build")
 
 def shade_pbr(geo_id, prim_id, p, wo):#wo=view
@@ -106,9 +110,8 @@ def shade_pbr(geo_id, prim_id, p, wo):#wo=view
     s_temp =0.25*D*F*G/(n.dot(-light_dir)*n.dot(-wo)) 
     return LightColor/(100-p[1]*p[1])*(Kd*d_temp+Ks*s_temp)
 
-ssn = 1
+ssn = 8
 image = torch.zeros(pic_res, pic_res, 3)
-
 
 def render():
     global image
@@ -127,9 +130,7 @@ def render():
                     image[i][j] += shade_pbr(rc.geo_id, rc.prim_id,c.pos+dir*rc.dist, dir)*ao_image[i][j]#AO
                 else:
                     # env background color
-                    image[i][j] += torch.Tensor([0, 0, 0.0]
-                                                ).requires_grad_(True)
-
+                    image[i][j] += torch.Tensor([0, 0, 0.0]).requires_grad_(True)
             image[i][j] /= ssn
     return image
 
@@ -144,7 +145,7 @@ pykay.imwrite(image.cpu(), 'results/pbr_ao/image.png')
 
 optimizer = torch.optim.Adam([Ks,Kd,Ka,Ia,rough,LightColor], lr=0.1)
 # Run 200 Adam iterations.
-its=150
+its=200
 for t in range(its):
     print('iteration:', t)
     optimizer.zero_grad()
