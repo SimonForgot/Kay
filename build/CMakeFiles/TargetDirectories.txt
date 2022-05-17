@@ -1,5 +1,0 @@
-/home/simonforgot/repo/Kay/build/CMakeFiles/rebuild_cache.dir
-/home/simonforgot/repo/Kay/build/CMakeFiles/edit_cache.dir
-/home/simonforgot/repo/Kay/build/CMakeFiles/kay.dir
-/home/simonforgot/repo/Kay/build/pybind11/CMakeFiles/rebuild_cache.dir
-/home/simonforgot/repo/Kay/build/pybind11/CMakeFiles/edit_cache.dir

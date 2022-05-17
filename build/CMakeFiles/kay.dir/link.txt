@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -g -shared  -o kay.cpython-39-x86_64-linux-gnu.so CMakeFiles/kay.dir/src/kay.cpp.o CMakeFiles/kay.dir/src/render.cpp.o  -Wl,-rpath,/home/simonforgot/repo/Kay/embree/lib-linux ../embree/lib-linux/libembree3.so 
